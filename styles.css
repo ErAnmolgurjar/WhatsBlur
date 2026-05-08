@@ -1,0 +1,30 @@
+/* ── Message Preview Blur (Sidebar Privacy) ─── */
+:root {
+  --msp-blur: 4px;
+}
+
+.vQ0w7
+/* message preview (v2.2412.xx) */
+,
+div._ak8k
+
+/* message preview (v2.3000.xx) */
+  {
+  filter: blur(var(--msp-blur)) grayscale(1);
+  transition-delay: 0s;
+}
+
+.vQ0w7:hover, /* message preview (v2.2412.xx) */
+div._ak8k:hover /* message preview (v2.3000.xx) */
+{
+  filter: blur(0) grayscale(0);
+  transition-delay: 0.3s;
+}
+
+/* ── System messages ────────────────────────── */
+[data-testid="system-message"] {
+  background: rgba(0, 198, 162, 0.06) !important;
+  border-radius: 12px !important;
+  color: var(--wa-text-secondary) !important;
+  font-size: 12px !important;
+}
