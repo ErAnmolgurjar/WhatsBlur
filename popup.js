@@ -1,13 +1,26 @@
-const STORAGE_KEY = "wa_styler_enabled";
+const STORAGE_ENABLED_KEY = "wa_styler_enabled";
+const STORAGE_MODE_KEY = "wa_styler_mode";
 const toggle = document.getElementById("toggle");
 const statusText = document.getElementById("status-text");
 const statusDot = document.getElementById("status-dot");
 const card = document.getElementById("card");
+const modeInputs = document.querySelectorAll('input[name="blur-mode"]');
 
-function updateUI(enabled) {
+function getSelectedMode() {
+  const selected = document.querySelector('input[name="blur-mode"]:checked');
+  return selected ? selected.value : "all";
+}
+
+function setSelectedMode(mode) {
+  modeInputs.forEach((input) => {
+    input.checked = input.value === mode;
+  });
+}
+
+function updateUI(enabled, mode) {
   toggle.checked = enabled;
   if (enabled) {
-    statusText.textContent = "Theme Active";
+    statusText.textContent = mode === "message" ? "Message Only" : "Everything";
     statusDot.classList.add("active");
     card.classList.add("theme-on");
   } else {
@@ -17,23 +30,50 @@ function updateUI(enabled) {
   }
 }
 
+function broadcastState(enabled, mode) {
+  chrome.tabs.query({ url: "https://web.whatsapp.com/*" }, (tabs) => {
+    if (chrome.runtime.lastError) {
+      return;
+    }
+
+    tabs.forEach((tab) => {
+      chrome.tabs.sendMessage(tab.id, {
+        type: "UPDATE_BLUR_STATE",
+        enabled,
+        mode,
+      }, () => {
+        if (chrome.runtime.lastError) {
+          return;
+        }
+      });
+    });
+  });
+}
+
 // Load current state
-chrome.storage.local.get([STORAGE_KEY], (result) => {
-  const enabled = result[STORAGE_KEY] !== false;
-  updateUI(enabled);
+chrome.storage.local.get([STORAGE_ENABLED_KEY, STORAGE_MODE_KEY], (result) => {
+  const enabled = result[STORAGE_ENABLED_KEY] !== false;
+  const mode = result[STORAGE_MODE_KEY] || "all";
+  setSelectedMode(mode);
+  updateUI(enabled, mode);
 });
 
 // Handle toggle change
 toggle.addEventListener("change", () => {
   const enabled = toggle.checked;
-  chrome.storage.local.set({ [STORAGE_KEY]: enabled });
-  updateUI(enabled);
+  const mode = getSelectedMode();
+  chrome.storage.local.set({ [STORAGE_ENABLED_KEY]: enabled, [STORAGE_MODE_KEY]: mode });
+  updateUI(enabled, mode);
+  broadcastState(enabled, mode);
+});
 
-  // Send message to active WhatsApp Web tabs
-  chrome.tabs.query({ url: "https://web.whatsapp.com/*" }, (tabs) => {
-    tabs.forEach((tab) => {
-      chrome.tabs.sendMessage(tab.id, { type: "TOGGLE_STYLE", enabled });
-    });
+modeInputs.forEach((input) => {
+  input.addEventListener("change", () => {
+    const mode = getSelectedMode();
+    const enabled = toggle.checked;
+    chrome.storage.local.set({ [STORAGE_ENABLED_KEY]: enabled, [STORAGE_MODE_KEY]: mode });
+    updateUI(enabled, mode);
+    broadcastState(enabled, mode);
   });
 });
 
