@@ -6,7 +6,8 @@
 .vQ0w7
 /* message preview (v2.2412.xx) */
 ,
-div._ak8k
+div._ak8k,
+div._ak8q
 
 /* message preview (v2.3000.xx) */
   {
@@ -15,7 +16,8 @@ div._ak8k
 }
 
 .vQ0w7:hover, /* message preview (v2.2412.xx) */
-div._ak8k:hover /* message preview (v2.3000.xx) */
+div._ak8k:hover, /* message preview (v2.3000.xx) */
+div._ak8q:hover /* message preview (v2.3000.xx) */
 {
   filter: blur(0) grayscale(0);
   transition-delay: 0.3s;
