@@ -31,8 +31,16 @@ toggle.addEventListener("change", () => {
 
   // Send message to active WhatsApp Web tabs
   chrome.tabs.query({ url: "https://web.whatsapp.com/*" }, (tabs) => {
+    if (chrome.runtime.lastError) {
+      return;
+    }
+
     tabs.forEach((tab) => {
-      chrome.tabs.sendMessage(tab.id, { type: "TOGGLE_STYLE", enabled });
+      chrome.tabs.sendMessage(tab.id, { type: "TOGGLE_STYLE", enabled }, () => {
+        if (chrome.runtime.lastError) {
+          return;
+        }
+      });
     });
   });
 });
