@@ -1,24 +1,30 @@
+/* 
+
+  contact_name div: _ak8q
+  message div: _ak8k
+
+*/
+
+
 /* ── Message Preview Blur (Sidebar Privacy) ─── */
 :root {
   --msp-blur: 4px;
 }
 
-.vQ0w7
-/* message preview (v2.2412.xx) */
-,
-div._ak8k,
-div._ak8q
-
-/* message preview (v2.3000.xx) */
-  {
+html[data-whatsblur-mode="all"] .vQ0w7,
+html[data-whatsblur-mode="all"] div._ak8k,
+html[data-whatsblur-mode="all"] div._ak8q,
+html[data-whatsblur-mode="message"] .vQ0w7,
+html[data-whatsblur-mode="message"] div._ak8k {
   filter: blur(var(--msp-blur)) grayscale(1);
   transition-delay: 0s;
 }
 
-.vQ0w7:hover, /* message preview (v2.2412.xx) */
-div._ak8k:hover, /* message preview (v2.3000.xx) */
-div._ak8q:hover /* message preview (v2.3000.xx) */
-{
+html[data-whatsblur-mode="all"] .vQ0w7:hover,
+html[data-whatsblur-mode="all"] div._ak8k:hover,
+html[data-whatsblur-mode="all"] div._ak8q:hover,
+html[data-whatsblur-mode="message"] .vQ0w7:hover,
+html[data-whatsblur-mode="message"] div._ak8k:hover {
   filter: blur(0) grayscale(0);
   transition-delay: 0.3s;
 }
