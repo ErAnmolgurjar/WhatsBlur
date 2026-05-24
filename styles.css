@@ -1,29 +1,42 @@
-/* ── Message Preview Blur (Sidebar Privacy) ─── */
-:root {
-  --msp-blur: 4px;
+/* WhatsBlur — blur + optional hover reveal */
+
+/* Contact / group name */
+html.whatsblur-contacts #pane-side [data-testid="cell-frame-title"],
+html.whatsblur-contacts #pane-side [data-testid="cell-frame-label"],
+html.whatsblur-contacts #pane-side [data-whatsblur="contact"] {
+  filter: blur(var(--wb-contact-blur, 5px)) grayscale(0.25) !important;
+  transition: filter 0.15s ease;
 }
 
-.vQ0w7
-/* message preview (v2.2412.xx) */
-,
-div._ak8k,
-div._ak8q
-
-/* message preview (v2.3000.xx) */
-  {
-  filter: blur(var(--msp-blur)) grayscale(1);
-  transition-delay: 0s;
+/* Message preview */
+html.whatsblur-messages #pane-side [data-testid="cell-frame-secondary"],
+html.whatsblur-messages #pane-side [data-whatsblur="message"] {
+  filter: blur(var(--wb-msg-blur, 6px)) grayscale(1) !important;
+  transition: filter 0.15s ease;
 }
 
-.vQ0w7:hover, /* message preview (v2.2412.xx) */
-div._ak8k:hover, /* message preview (v2.3000.xx) */
-div._ak8q:hover /* message preview (v2.3000.xx) */
-{
-  filter: blur(0) grayscale(0);
-  transition-delay: 0.3s;
+/* Profile photo */
+html.whatsblur-profiles #pane-side [data-whatsblur="profile"] {
+  filter: blur(var(--wb-profile-blur, 8px)) grayscale(0.35) !important;
+  transition: filter 0.15s ease;
 }
 
-/* ── System messages ────────────────────────── */
+/* Unblur on hover (when enabled in popup) */
+html.whatsblur-messages.whatsblur-hover-messages #pane-side [data-testid="cell-frame-secondary"]:hover,
+html.whatsblur-messages.whatsblur-hover-messages #pane-side [data-whatsblur="message"]:hover {
+  filter: none !important;
+}
+
+html.whatsblur-contacts.whatsblur-hover-contacts #pane-side [data-testid="cell-frame-title"]:hover,
+html.whatsblur-contacts.whatsblur-hover-contacts #pane-side [data-testid="cell-frame-label"]:hover,
+html.whatsblur-contacts.whatsblur-hover-contacts #pane-side [data-whatsblur="contact"]:hover {
+  filter: none !important;
+}
+
+html.whatsblur-profiles.whatsblur-hover-profiles #pane-side [data-whatsblur="profile"]:hover {
+  filter: none !important;
+}
+
 [data-testid="system-message"] {
   background: rgba(0, 198, 162, 0.06) !important;
   border-radius: 12px !important;

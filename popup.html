@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WhatsApp Web Styler</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
+      --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-display: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       --teal: #00c6a2;
       --teal-glow: rgba(0,198,162,0.25);
       --bg: #0d0f14;
@@ -21,11 +21,13 @@
     }
 
     body {
-      width: 300px;
+      width: 320px;
+      max-height: 640px;
+      overflow-x: hidden;
+      overflow-y: auto;
       background: var(--bg);
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      overflow: hidden;
+      font-family: var(--font-ui);
       padding: 0;
     }
 
@@ -69,7 +71,7 @@
     }
 
     .title {
-      font-family: 'Syne', sans-serif;
+      font-family: var(--font-display);
       font-size: 16px;
       font-weight: 700;
       letter-spacing: -0.02em;
@@ -106,7 +108,7 @@
     }
 
     .card-label {
-      font-family: 'Syne', sans-serif;
+      font-family: var(--font-display);
       font-size: 13px;
       font-weight: 600;
       letter-spacing: 0.01em;
@@ -209,6 +211,113 @@
       margin: 14px 0;
     }
 
+    .toggle-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toggle-label .hint {
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--muted);
+      opacity: 0.85;
+      margin-top: 3px;
+      line-height: 1.25;
+    }
+
+    .mono-hint {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      letter-spacing: 0.02em;
+    }
+
+    .intensity-block {
+      margin: 2px 0 8px 0;
+      padding-left: 2px;
+    }
+
+    .intensity-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .intensity-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .intensity-val {
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      appearance: none;
+      background: var(--surface2);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--teal);
+      border: 2px solid var(--surface);
+      box-shadow: 0 0 0 1px rgba(0,198,162,0.35);
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--teal);
+      border: 2px solid var(--surface);
+      cursor: pointer;
+    }
+
+    .hover-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .hover-check input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      margin-top: 1px;
+      accent-color: var(--teal);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .hover-check span {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .hover-check:has(input:checked) span {
+      color: var(--text);
+    }
+
     /* ── Theme preview strips ── */
     .preview-label {
       font-size: 10px;
@@ -270,7 +379,7 @@
       border: 1px solid rgba(0,198,162,0.2);
       border-radius: 12px;
       color: var(--teal);
-      font-family: 'DM Sans', sans-serif;
+      font-family: var(--font-ui);
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
@@ -325,19 +434,77 @@
   <!-- Card -->
   <div class="card" id="card">
     <div class="card-top">
-      <div class="card-label">Blur Messages</div>
+      <div class="card-label">Privacy</div>
       <div class="status-pill">
         <div class="status-dot" id="status-dot"></div>
         <span id="status-text">Loading…</span>
       </div>
     </div>
 
-    <div class="toggle-row">
-      <div class="toggle-label">Apply Blur to WhatsApp Web</div>
-      <label class="switch">
-        <input type="checkbox" id="toggle" />
-        <span class="slider"></span>
-      </label>
+    <div class="toggle-stack">
+      <div class="toggle-row">
+        <div class="toggle-label">
+          Blur all messages
+          <span class="hint">Preview line under each name in the left list</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggle-messages" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="intensity-block">
+        <div class="intensity-head">
+          <span class="intensity-label">Preview blur strength</span>
+          <span class="intensity-val" id="val-messages">6 px</span>
+        </div>
+        <input type="range" id="slider-messages" min="0" max="20" value="6" step="1" />
+        <label class="hover-check">
+          <input type="checkbox" id="hover-messages" />
+          <span>Unblur on mouse hover</span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-label">
+          Blur all contacts
+          <span class="hint">Contact &amp; group names in the chat list</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggle-contacts" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="intensity-block">
+        <div class="intensity-head">
+          <span class="intensity-label">Contact blur strength</span>
+          <span class="intensity-val" id="val-contacts">5 px</span>
+        </div>
+        <input type="range" id="slider-contacts" min="0" max="20" value="5" step="1" />
+        <label class="hover-check">
+          <input type="checkbox" id="hover-contacts" />
+          <span>Unblur on mouse hover</span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-label">
+          Hide profile pictures
+          <span class="hint">Avatars in the left chat list</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggle-profiles" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="intensity-block">
+        <div class="intensity-head">
+          <span class="intensity-label">Profile blur strength</span>
+          <span class="intensity-val" id="val-profiles">8 px</span>
+        </div>
+        <input type="range" id="slider-profiles" min="0" max="20" value="8" step="1" />
+        <label class="hover-check">
+          <input type="checkbox" id="hover-profiles" />
+          <span>Unblur on mouse hover</span>
+        </label>
+      </div>
     </div>
 
   </div>
